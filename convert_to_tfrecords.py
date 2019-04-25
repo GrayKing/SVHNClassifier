@@ -109,12 +109,12 @@ def convert_to_tfrecords(path_to_dataset_dir_and_digit_struct_mat_file_tuples,
     for path_to_dataset_dir, path_to_digit_struct_mat_file in path_to_dataset_dir_and_digit_struct_mat_file_tuples:
         path_to_image_files = tf.gfile.Glob(os.path.join(path_to_dataset_dir, '*.png'))
         total_files = len(path_to_image_files)
-        print '%d files found in %s' % (total_files, path_to_dataset_dir)
+        print('%d files found in %s' % (total_files, path_to_dataset_dir))
 
         with h5py.File(path_to_digit_struct_mat_file, 'r') as digit_struct_mat_file:
             example_reader = ExampleReader(path_to_image_files)
             for index, path_to_image_file in enumerate(path_to_image_files):
-                print '(%d/%d) processing %s' % (index + 1, total_files, path_to_image_file)
+                print('(%d/%d) processing %s' % (index + 1, total_files, path_to_image_file))
 
                 example = example_reader.read_and_convert(digit_struct_mat_file)
                 if example is None:
@@ -132,7 +132,7 @@ def convert_to_tfrecords(path_to_dataset_dir_and_digit_struct_mat_file_tuples,
 
 def create_tfrecords_meta_file(num_train_examples, num_val_examples, num_test_examples,
                                path_to_tfrecords_meta_file):
-    print 'Saving meta file to %s...' % path_to_tfrecords_meta_file
+    print('Saving meta file to %s...' % path_to_tfrecords_meta_file)
     meta = Meta()
     meta.num_train_examples = num_train_examples
     meta.num_val_examples = num_val_examples
@@ -143,10 +143,8 @@ def create_tfrecords_meta_file(num_train_examples, num_val_examples, num_test_ex
 def main(_):
     path_to_train_dir = os.path.join(FLAGS.data_dir, 'train')
     path_to_test_dir = os.path.join(FLAGS.data_dir, 'test')
-    path_to_extra_dir = os.path.join(FLAGS.data_dir, 'extra')
     path_to_train_digit_struct_mat_file = os.path.join(path_to_train_dir, 'digitStruct.mat')
     path_to_test_digit_struct_mat_file = os.path.join(path_to_test_dir, 'digitStruct.mat')
-    path_to_extra_digit_struct_mat_file = os.path.join(path_to_extra_dir, 'digitStruct.mat')
 
     path_to_train_tfrecords_file = os.path.join(FLAGS.data_dir, 'train.tfrecords')
     path_to_val_tfrecords_file = os.path.join(FLAGS.data_dir, 'val.tfrecords')
@@ -156,12 +154,11 @@ def main(_):
     for path_to_file in [path_to_train_tfrecords_file, path_to_val_tfrecords_file, path_to_test_tfrecords_file]:
         assert not os.path.exists(path_to_file), 'The file %s already exists' % path_to_file
 
-    print 'Processing training and validation data...'
-    [num_train_examples, num_val_examples] = convert_to_tfrecords([(path_to_train_dir, path_to_train_digit_struct_mat_file),
-                                                                   (path_to_extra_dir, path_to_extra_digit_struct_mat_file)],
+    print('Processing training and validation data...')
+    [num_train_examples, num_val_examples] = convert_to_tfrecords([(path_to_train_dir, path_to_train_digit_struct_mat_file)],
                                                                   [path_to_train_tfrecords_file, path_to_val_tfrecords_file],
                                                                   lambda paths: 0 if random.random() > 0.1 else 1)
-    print 'Processing test data...'
+    print('Processing test data...')
     [num_test_examples] = convert_to_tfrecords([(path_to_test_dir, path_to_test_digit_struct_mat_file)],
                                                [path_to_test_tfrecords_file],
                                                lambda paths: 0)
@@ -169,7 +166,7 @@ def main(_):
     create_tfrecords_meta_file(num_train_examples, num_val_examples, num_test_examples,
                                path_to_tfrecords_meta_file)
 
-    print 'Done'
+    print('Done')
 
 
 if __name__ == '__main__':
